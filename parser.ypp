@@ -18,29 +18,36 @@
 %token B
 %token BOOL
 %token CONST
-%token AND
-%token OR
-%token NOT
 %token TRUE
 %token FALSE 
 %token RETURN
 %token IF
-%token ELSE
 %token WHILE 
 %token BREAK
 %token CONTINUE
 %token SC
 %token COMMA
-%token LPAREN
-%token RPAREN
-%token LBRACE
-%token RBRACE
-%token ASSIGN
-%token RELOP
-%token BINOP
 %token ID
 %token NUM
 %token STRING
+
+%right ASSIGN
+%left OR
+%left AND
+%left RELOP_EQUAL
+%nonassoc RELOP_COMPARE
+%left BINOP_ADD
+%left BINOP_MUL
+%right NOT
+%left LPAREN
+%left RPAREN
+%left LBRACE
+%left RBRACE
+%nonassoc ELSE
+
+
+
+
 
 %%
 //rules
@@ -60,7 +67,7 @@ Formals		:	/*epsilon*/                                                  {output:
 FormalsList	:	FormalDecl                                                   {output::printProductionRule(9);}
 			|	FormalDecl COMMA FormalsList                                 {output::printProductionRule(10);}
 ;                                                                             
-FormalDecl	:	Type ID                                                      {output::printProductionRule(11);}
+FormalDecl	:	TypeAnnotation Type ID                                                      {output::printProductionRule(11);}
 ;                                                                             
 Statements	:	Statement                                                    {output::printProductionRule(12);}
 			|	Statements Statement                                         {output::printProductionRule(13);}
@@ -92,7 +99,8 @@ TypeAnnotation	:	/*epsilon*/                                              {outpu
 				|	CONST                                                    {output::printProductionRule(34);}
 ;                                                                        
 Exp			:	LPAREN Exp RPAREN                                            {output::printProductionRule(35);}
-			|	Exp BINOP Exp                                                {output::printProductionRule(36);}
+			|	Exp BINOP_MUL Exp                                            {output::printProductionRule(36);}
+			|	Exp BINOP_ADD Exp                                            {output::printProductionRule(36);}
 			|	ID                                                           {output::printProductionRule(37);}
 			|	Call                                                         {output::printProductionRule(38);}
 			|	NUM                                                          {output::printProductionRule(39);}
@@ -103,7 +111,8 @@ Exp			:	LPAREN Exp RPAREN                                            {output::pr
 			|	NOT Exp                                                      {output::printProductionRule(44);}
 			|	Exp AND Exp                                                  {output::printProductionRule(45);}
 			|	Exp OR Exp                                                   {output::printProductionRule(46);}
-			|	Exp RELOP Exp                                                {output::printProductionRule(47);}
+			|	Exp RELOP_COMPARE Exp                                        {output::printProductionRule(47);}
+			|	Exp RELOP_EQUAL Exp                                          {output::printProductionRule(47);}
 			|	LPAREN TypeAnnotation Type RPAREN Exp						 {output::printProductionRule(48);}
 ;
 %%
