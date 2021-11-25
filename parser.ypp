@@ -1,0 +1,119 @@
+%{
+//C user declarations
+	#include <iostream>
+	#include "output.hpp"
+	struct Node{
+		
+	};
+	#define YYSTYPE Node*
+	int yylex();
+	void yyerror(const char*);
+%}
+//declarations
+%token VOID
+%token INT
+%token BYTE
+%token B
+%token BOOL
+%token CONST
+%token AND
+%token OR
+%token NOT
+%token TRUE
+%token FALSE 
+%token RETURN
+%token IF
+%token ELSE
+%token WHILE 
+%token BREAK
+%token CONTINUE
+%token SC
+%token COMMA
+%token LPAREN
+%token RPAREN
+%token LBRACE
+%token RBRACE
+%token ASSIGN
+%token RELOP
+%token BINOP
+%token ID
+%token NUM
+%token STRING
+%%
+//rules
+Program		:	Funcs                                                        {printProductionRule(1);}
+;
+Funcs		:	/*epsilon*/                                                  {printProductionRule(2);}
+			|	FuncDecl Funcs                                               {printProductionRule(3);}
+;
+FuncDecl	:	RetType ID LPAREN Formals RPAREN LBRACE Statements RBRACE    {printProductionRule(4);} 
+;
+RetType		:	Type                                                         {printProductionRule(5);}
+			|	VOID;                                                        {printProductionRule(6);}
+Formals		:	/*epsilon*/                                                  {printProductionRule(7);}
+			|	FormalsList                                                  {printProductionRule(8);}
+;
+FormalsList	:	FormalDecl                                                   {printProductionRule(9);}
+			|	FormalDecl COMMA FormalsList                                 {printProductionRule(10);}
+;
+FormalDecl	:	Type ID                                                      {printProductionRule(11);}
+;
+Statements	:	Statement                                                    {printProductionRule(12);}
+			|	Statements Statement                                         {printProductionRule(13);}
+;
+Statement	:	LBRACE Statements RBRACE                                     {printProductionRule(14);}
+			|	TypeAnnotation Type ID SC                                    {printProductionRule(15);}
+			|	TypeAnnotation Type ID ASSIGN Exp SC                         {printProductionRule(16);}
+			|	ID ASSIGN Exp SC                                             {printProductionRule(17);}
+			|	Call SC                                                      {printProductionRule(18);}
+			|	RETURN SC                                                    {printProductionRule(19);}
+			|	RETURN Exp SC                                                {printProductionRule(20);}
+			|	IF LPAREN Exp RPAREN Statement                               {printProductionRule(21);}
+			|	IF LPAREN Exp RPAREN Statement ELSE Statement                {printProductionRule(22);}
+			|	WHILE LPAREN Exp RPAREN Statement                            {printProductionRule(23);}
+			|	BREAK SC                                                     {printProductionRule(24);}
+			|	CONTINUE SC                                                  {printProductionRule(25);}
+;
+Call		:	ID LPAREN ExpList RPAREN                                     {printProductionRule(26);}
+			|	ID LPAREN RPAREN                                             {printProductionRule(27);}
+;
+ExpList		:	Exp                                                          {printProductionRule(28);}
+			|	Exp COMMA ExpList                                            {printProductionRule(29);}
+;
+Type		:	INT                                                          {printProductionRule(30);}
+			|	BYTE                                                         {printProductionRule(31);}
+			|	BOOL                                                         {printProductionRule(32);}
+; 
+TypeAnnotation	:	/*epsilon*/                                              {printProductionRule(33);}
+				|	CONST                                                    {printProductionRule(34);}
+;
+Exp			:	LPAREN Exp RPAREN                                            {printProductionRule(35);}
+			|	Exp BINOP Exp                                                {printProductionRule(36);}
+			|	ID                                                           {printProductionRule(37);}
+			|	Call                                                         {printProductionRule(38);}
+			|	NUM                                                          {printProductionRule(39);}
+			|	NUM B                                                        {printProductionRule(40);}
+			|	STRING                                                       {printProductionRule(41);}
+			|	TRUE                                                         {printProductionRule(42);}
+			|	FALSE                                                        {printProductionRule(43);}
+			|	NOT Exp                                                      {printProductionRule(44);}
+			|	Exp AND Exp                                                  {printProductionRule(45);}
+			|	Exp OR Exp                                                   {printProductionRule(46);}
+			|	Exp RELOP Exp                                                {printProductionRule(47);}
+			|	LPAREN TypeAnnotation Type RPAREN Exp						 {printProductionRule(48);}
+;
+%%
+//C user routines
+void yyerror(const char*){
+	errorSyn(yylineno);
+	exit(1);
+}
+int main(){
+	return yyparse();
+}
+
+
+
+
+
+
