@@ -1,0 +1,107 @@
+%{
+//C user declarations
+	#include <iostream>
+	#include "output.hpp"
+	struct Node{
+		
+	};
+	#define YYSTYPE Node*
+	int yylex();
+	void yyerror(const char*);
+%}
+//declarations
+%token VOID
+%token INT
+%token BYTE
+%token B
+%token BOOL
+%token CONST
+%token AND
+%token OR
+%token NOT
+%token TRUE
+%token FALSE 
+%token RETURN
+%token IF
+%token ELSE
+%token WHILE 
+%token BREAK
+%token CONTINUE
+%token SC
+%token COMMA
+%token LPAREN
+%token RPAREN
+%token LBRACE
+%token RBRACE
+%token ASSIGN
+%token RELOP
+%token BINOP
+%token ID
+%token NUM
+%token STRING
+
+%%
+//rules
+Program		:	Funcs;
+Funcs		:	/*epsilon*/
+			|	FuncDecl Funcs;
+FuncDecl	:	RetType ID LPAREN Formals RPAREN LBRACE Statements RBRACE;
+RetType		:	Type
+			|	VOID;
+Formals		:	/*epsilon*/
+			|	FormalsList;
+FormalsList	:	FormalDecl
+			|	FormalDecl COMMA FormalsList;
+FormalDecl	:	Type ID;
+Statements	:	Statement
+			|	Statements Statement;
+Statement	:	LBRACE Statements RBRACE
+			|	TypeAnnotation Type ID SC
+			|	TypeAnnotation Type ID ASSIGN Exp SC
+			|	ID ASSIGN Exp SC
+			|	Call SC
+			|	RETURN SC
+			|	RETURN Exp SC
+			|	IF LPAREN Exp RPAREN Statement
+			|	IF LPAREN Exp RPAREN Statement ELSE Statement
+			|	WHILE LPAREN Exp RPAREN Statement
+			|	BREAK SC
+			|	CONTINUE SC;
+Call		:	ID LPAREN ExpList RPAREN
+			|	ID LPAREN RPAREN;
+ExpList		:	Exp
+			|	Exp COMMA ExpList;
+Type		:	INT
+			|	BYTE
+			|	BOOL;
+TypeAnnotation	:	/*epsilon*/
+				|	CONST;
+Exp			:	LPAREN Exp RPAREN
+			|	Exp BINOP Exp
+			|	ID
+			|	Call
+			|	NUM
+			|	NUM B
+			|	STRING
+			|	TRUE
+			|	FALSE
+			|	NOT Exp
+			|	Exp AND Exp
+			|	Exp OR Exp
+			|	Exp RELOP Exp
+			|	LPAREN TypeAnnotation Type RPAREN Exp;
+%%
+//C user routines
+void yyerror(const char*){
+	std::cout<<"syntax error" << std::endl;
+	exit(1);
+}
+int main(){
+	return yyparse();
+}
+
+
+
+
+
+
