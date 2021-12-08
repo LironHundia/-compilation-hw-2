@@ -6,7 +6,7 @@
 %option yylineno
 %option noyywrap
 
-whitespace                            [ \t\n\r]
+whitespace                                    [ \t\n\r]
 
 %%
 
@@ -15,7 +15,7 @@ int                                           return INT;
 byte                                          return BYTE;
 b                                             return B;
 bool                                          return BOOL;
-const										  return CONST;
+const										                      return CONST;
 and                                           return AND;
 or                                            return OR;
 not                                           return NOT;
@@ -34,13 +34,13 @@ continue                                      return CONTINUE;
 \{                                            return LBRACE;
 \}                                            return RBRACE;
 =                                             return ASSIGN;
-\<|\>|\<\=|\>\=                               	  return RELOP_COMPARE;
-==|!=                              			  return RELOP_EQUAL;
+\<|\>|\<\=|\>\=                               return RELOP_COMPARE;
+==|!=                                         return RELOP_EQUAL;
 [\*\/]                                    	  return BINOP_MUL;
-[\+\-]                                  	  return BINOP_ADD;
-[a-zA-Z][a-zA-Z0-9]*                   		  return ID;
+[\+\-]                                        return BINOP_ADD;
+[a-zA-Z][a-zA-Z0-9]*                          return ID;
 0|[1-9][0-9]*                                 return NUM;
-\"([^\n\r\"\\]|\\[rnt"\\])+\"				  return STRING;
+\"([^\n\r\"\\]|\\[rnt"\\])+\"			            return STRING;
 
 \/\/[^\r\n]*[ \r|\n|\r\n]?                    ;
 {whitespace}                                  ;
